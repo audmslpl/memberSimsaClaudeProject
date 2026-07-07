@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(kotlinc -version)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" --max-time 8 https://services.gradle.org/distributions/gradle-8.9-bin.zip)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" --max-time 8 https://dl.google.com/dl/android/maven2/master-index.xml)",
+      "Bash(cd \"E:/WorkSpace/KDSWorkspace/SeolJeongHun/OfficeFit\")",
+      "Bash(export JAVA_HOME=\"/c/Program Files/Java/jdk-17.0.5\")",
+      "Bash(./gradlew assembleDebug)",
+      "Bash(tee /c/Users/seol/AppData/Local/Temp/claude/E--WorkSpace-KDSWorkspace-SeolJeongHun/d5c3a0de-8fb5-4db4-a781-3ed639e9f1b2/scratchpad/build1.log)",
+      "Bash(tee /c/Users/seol/AppData/Local/Temp/claude/E--WorkSpace-KDSWorkspace-SeolJeongHun/d5c3a0de-8fb5-4db4-a781-3ed639e9f1b2/scratchpad/build2.log)",
+      "Bash(./gradlew testDebugUnitTest)",
+      "Bash(./gradlew --stop)",
+      "Bash(./gradlew testDebugUnitTest --rerun)",
+      "Bash(./gradlew clean *)",
+      "Bash(export ANDROID_SDK_ROOT=\"/c/Users/seol/AppData/Local/Android/Sdk\")",
+      "Bash(export ANDROID_HOME=\"$ANDROID_SDK_ROOT\")",
+      "Bash(nohup /c/Users/seol/AppData/Local/Android/Sdk/emulator/emulator.exe -avd Pixel_5_API_27 -no-snapshot -no-boot-anim)",
+      "Bash(disown)",
+      "Bash(echo \"launched, pid=$!\")",
+      "Bash(/c/Users/seol/AppData/Local/Android/Sdk/platform-tools/adb.exe shell *)",
+      "Bash(/c/Users/seol/AppData/Local/Android/Sdk/platform-tools/adb.exe devices *)"
+    ]
+  }
+}
