@@ -1,0 +1,2 @@
+import type {CommercialRecord} from '../types/data';
+export function rankRecords(records:CommercialRecord[]){const eligible=records.filter(r=>r.recommendationScore!==null);const compare=(a:CommercialRecord,b:CommercialRecord)=>(b.recommendationScore??0)-(a.recommendationScore??0)||(a.riskScore??101)-(b.riskScore??101)||(b.salesPerStoreYoY??-Infinity)-(a.salesPerStoreYoY??-Infinity);return{recommended:eligible.filter(r=>(r.riskScore??101)<75).sort(compare).slice(0,5),highRisk:eligible.filter(r=>(r.riskScore??0)>=75).sort(compare)}}
