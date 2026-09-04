@@ -2,6 +2,11 @@
 
 예비 창업자가 송파구 상권의 성장 흐름과 과열 위험을 업종별로 비교하는 공공데이터 기반 웹서비스다.
 
+## 프로젝트 개요
+
+바이브코딩 툴을 활용하여 서비스 기획부터 개발 및 배포까지
+전체 프로세스를 실습하기 위해 제작한 MVP 서비스입니다.
+
 ## 구조
 
 ```text
@@ -12,6 +17,24 @@
 ```
 
 별도 API 서버는 운영하지 않는다. 브라우저는 Supabase anon key로 읽기만 수행하며, 데이터 쓰기는 service role key를 가진 Python 동기화 작업만 수행한다.
+
+# Commercial Compass
+
+바이브코딩을 활용하여 제작한 상권 분석 MVP 서비스입니다.
+
+## 🚀 서비스 바로가기
+
+👉 [Commercial Compass 실행하기](https://mymapmk1.vercel.app)
+
+---
+
+### 개발 환경
+
+- 기획 : ChatGPT
+- 바이브코딩 : Codex
+- Repository : GitHub
+- Database : Supabase
+- Deployment : Vercel
 
 ## 로컬 실행
 
