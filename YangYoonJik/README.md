@@ -1,4 +1,4 @@
-# 상권나침반
+# 상권나침반 (🚀 서비스 바로가기 👉 [Commercial Compass 실행하기](https://mymapmk1.vercel.app))
 
 예비 창업자가 송파구 상권의 성장 흐름과 과열 위험을 업종별로 비교하는 공공데이터 기반 웹서비스다.
 
@@ -20,11 +20,7 @@
 
 # Commercial Compass
 
-바이브코딩을 활용하여 제작한 상권 분석 MVP 서비스입니다.
-
-## 🚀 서비스 바로가기
-
-👉 [Commercial Compass 실행하기](https://mymapmk1.vercel.app)
+바이브코딩을 활용하여 제작한 상권 분석 MVP 서비스입니다. 
 
 ---
 
