@@ -98,7 +98,6 @@
       "Bash(sudo *)",
       "Bash(su *)",
       "Bash(chmod 777 *)",
-      "Bash(git push *)",
       "Bash(git reset --hard *)",
       "Bash(git clean *)",
       "Bash(git merge *)",
