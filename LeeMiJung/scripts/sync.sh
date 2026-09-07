@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================
-# 공용 저장소 동기화 (LMJAgent → memberSimsaClaudeProject/LeeMiJung/LMJAgent)
+# 공용 저장소 동기화 (LMJAgent → memberSimsaClaudeProject/LeeMiJung)
 #
 # 로컬 프로젝트의 "git 추적 파일"만 골라 공용 저장소의 개인 서브디렉터리로
 # 복사한 뒤 커밋·푸시합니다. 두 저장소는 히스토리가 분리되어 있으므로
@@ -28,6 +28,9 @@
 #
 # 변경이력:
 #   2026-09-07  신규 작성
+#   2026-09-07  미러 커밋 아이덴티티를 LeeMiJung78로 고정. 전역 gitconfig 값을 쓰면
+#               GitHub이 다른 계정으로 매핑되어 기여자 표시가 어긋났음.
+#   2026-09-07  대상 경로를 LeeMiJung/LMJAgent → LeeMiJung 으로 변경(한 단계 축소)
 # =============================================================
 set -uo pipefail
 
@@ -37,8 +40,14 @@ SRC_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 # --- 설정 (환경변수로 덮어쓰기 가능) --------------------------------
 MIRROR_DIR="${MIRROR_DIR:-$HOME/Repositories/Claude/memberSimsa}"
 MIRROR_URL="${MIRROR_URL:-https://github.com/audmslpl/memberSimsaClaudeProject}"
-SUBDIR="${SUBDIR:-LeeMiJung/LMJAgent}"
+SUBDIR="${SUBDIR:-LeeMiJung}"
 BRANCH="${BRANCH:-main}"
+
+# 미러 커밋에 쓸 아이덴티티.
+#   전역 ~/.gitconfig 값(ghyu/yufree75@gmail.com)을 그대로 쓰면 GitHub이 다른 계정(ifree015)에
+#   매핑하므로, 미러 저장소에는 항상 이 값을 강제한다. noreply 주소라 개인 메일이 노출되지 않는다.
+GIT_NAME="${GIT_NAME:-LeeMiJung78}"
+GIT_EMAIL="${GIT_EMAIL:-323823650+LeeMiJung78@users.noreply.github.com}"
 
 # --- 옵션 파싱 ------------------------------------------------------
 DRY_RUN=0
@@ -72,7 +81,10 @@ else
     git -C "$MIRROR_DIR" checkout -q "$BRANCH" || fail "$BRANCH 브랜치 체크아웃 실패"
     git -C "$MIRROR_DIR" pull --ff-only origin "$BRANCH" || fail "pull 실패 (원격이 앞서 있거나 네트워크 오류)"
 fi
+git -C "$MIRROR_DIR" config user.name  "$GIT_NAME"
+git -C "$MIRROR_DIR" config user.email "$GIT_EMAIL"
 echo "  미러 HEAD: $(git -C "$MIRROR_DIR" log --oneline -1)"
+echo "  커밋 계정: $GIT_NAME <$GIT_EMAIL>"
 
 # --- 2. 추적 파일을 스테이징으로 복사 --------------------------------
 say "추적 파일 수집"
