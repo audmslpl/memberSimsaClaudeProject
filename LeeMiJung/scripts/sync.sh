@@ -31,6 +31,8 @@
 #   2026-09-07  미러 커밋 아이덴티티를 LeeMiJung78로 고정. 전역 gitconfig 값을 쓰면
 #               GitHub이 다른 계정으로 매핑되어 기여자 표시가 어긋났음.
 #   2026-09-07  대상 경로를 LeeMiJung/LMJAgent → LeeMiJung 으로 변경(한 단계 축소)
+#   2026-09-07  EXCLUDES 추가. 대시보드(dashboard/, scripts/dashboard-*)는 비공개
+#               유지를 위해 공용 저장소에서만 제외한다(개인 저장소에는 남음).
 # =============================================================
 set -uo pipefail
 
@@ -48,6 +50,14 @@ BRANCH="${BRANCH:-main}"
 #   매핑하므로, 미러 저장소에는 항상 이 값을 강제한다. noreply 주소라 개인 메일이 노출되지 않는다.
 GIT_NAME="${GIT_NAME:-LeeMiJung78}"
 GIT_EMAIL="${GIT_EMAIL:-323823650+LeeMiJung78@users.noreply.github.com}"
+
+# 공용 저장소에 올리지 않을 경로 (git ls-files 출력에 대한 접두사 매칭).
+#   대시보드는 비공개 유지. 개인 저장소에는 그대로 남고 여기서만 빠진다.
+#   rsync --delete 가 미러에 이미 올라간 파일도 함께 정리한다.
+EXCLUDES=(
+    "dashboard/"
+    "scripts/dashboard-"
+)
 
 # --- 옵션 파싱 ------------------------------------------------------
 DRY_RUN=0
@@ -91,14 +101,28 @@ say "추적 파일 수집"
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
 
+is_excluded() {
+    local f="$1" pat
+    for pat in "${EXCLUDES[@]}"; do
+        case "$f" in "$pat"*) return 0 ;; esac
+    done
+    return 1
+}
+
 COUNT=0
+SKIPPED=0
 while IFS= read -r -d '' f; do
+    if is_excluded "$f"; then
+        SKIPPED=$((SKIPPED + 1))
+        continue
+    fi
     mkdir -p "$STAGE/$(dirname "$f")"
     cp -p "$SRC_DIR/$f" "$STAGE/$f"   # -p: mtime 보존 → 미변경 파일이 diff로 잡히지 않게
     COUNT=$((COUNT + 1))
 done < <(git -C "$SRC_DIR" ls-files -z)
 [ "$COUNT" -gt 0 ] || fail "추적 파일이 없습니다"
 echo "  ${COUNT}개 파일 ($(du -sh "$STAGE" | cut -f1))"
+[ "$SKIPPED" -gt 0 ] && echo "  제외: ${SKIPPED}개 (${EXCLUDES[*]})"
 
 # --- 3. 시크릿 마스킹 ------------------------------------------------
 say "시크릿 마스킹"
