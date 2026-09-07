@@ -80,17 +80,9 @@ flowchart LR
 
 ## 📑 개발 결과 보고서
 
-구성·운영·신뢰성을 정리한 16장 분량의 기술 보고서입니다.
-
-<div align="center">
-<a href="docs/LMJ-Agent-Report-v2.pdf"><img src="docs/screenshots/report-cover.png" alt="LMJ Agent Technical Report" width="640"/></a>
-</div>
-
-<div align="center">
+구성·운영·신뢰성을 정리한 16장 분량의 기술 보고서입니다. (맨 위 표지 이미지를 눌러도 열립니다)
 
 📕 **[PDF 보기](docs/LMJ-Agent-Report-v2.pdf)** &nbsp;·&nbsp; 📙 **[PPTX 내려받기](docs/LMJ-Agent-Report-v2.pptx)**
-
-</div>
 
 > 보고서는 `scripts/build-report-ppt-v2.py` 로 생성합니다. 슬라이드 내용을 바꾸려면
 > 스크립트를 수정한 뒤 다시 실행해 `docs/` 로 복사하세요.
