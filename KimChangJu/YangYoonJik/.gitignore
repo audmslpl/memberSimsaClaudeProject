@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.env*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+data/processed/*
+!data/processed/.gitkeep
+
+
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+.vercel
+.env*.local

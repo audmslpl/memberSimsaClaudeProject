@@ -1,0 +1,12 @@
+industryCode,industryName,topCategory,subCategory,mappingStatus
+CS100001,한식음식점,음식점,한식,verified
+CS100002,중식음식점,음식점,중식,verified
+CS100003,일식음식점,음식점,일식,verified
+CS100004,양식음식점,음식점,양식,verified
+CS100005,제과점,카페·베이커리,제과점,verified
+CS100006,패스트푸드점,음식점,패스트푸드,verified
+CS100007,치킨전문점,음식점,치킨,verified
+CS100008,분식전문점,음식점,분식,verified
+CS100009,호프·간이주점,주점,호프·간이주점,verified
+CS100010,커피·음료,카페·베이커리,커피·음료,verified
+
