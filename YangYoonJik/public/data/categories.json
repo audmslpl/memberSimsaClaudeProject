@@ -1,0 +1,87 @@
+{
+  "categories": [
+    {
+      "name": "음식점",
+      "analysisKey": "CAT:음식점",
+      "children": [
+        {
+          "name": "전체 음식점",
+          "analysisKey": "CAT:음식점",
+          "industryCode": null
+        },
+        {
+          "name": "한식",
+          "analysisKey": "IND:CS100001",
+          "industryCode": "CS100001"
+        },
+        {
+          "name": "중식",
+          "analysisKey": "IND:CS100002",
+          "industryCode": "CS100002"
+        },
+        {
+          "name": "일식",
+          "analysisKey": "IND:CS100003",
+          "industryCode": "CS100003"
+        },
+        {
+          "name": "양식",
+          "analysisKey": "IND:CS100004",
+          "industryCode": "CS100004"
+        },
+        {
+          "name": "패스트푸드",
+          "analysisKey": "IND:CS100006",
+          "industryCode": "CS100006"
+        },
+        {
+          "name": "치킨",
+          "analysisKey": "IND:CS100007",
+          "industryCode": "CS100007"
+        },
+        {
+          "name": "분식",
+          "analysisKey": "IND:CS100008",
+          "industryCode": "CS100008"
+        }
+      ]
+    },
+    {
+      "name": "카페·베이커리",
+      "analysisKey": "CAT:카페·베이커리",
+      "children": [
+        {
+          "name": "전체 카페·베이커리",
+          "analysisKey": "CAT:카페·베이커리",
+          "industryCode": null
+        },
+        {
+          "name": "제과점",
+          "analysisKey": "IND:CS100005",
+          "industryCode": "CS100005"
+        },
+        {
+          "name": "커피·음료",
+          "analysisKey": "IND:CS100010",
+          "industryCode": "CS100010"
+        }
+      ]
+    },
+    {
+      "name": "주점",
+      "analysisKey": "CAT:주점",
+      "children": [
+        {
+          "name": "전체 주점",
+          "analysisKey": "CAT:주점",
+          "industryCode": null
+        },
+        {
+          "name": "호프·간이주점",
+          "analysisKey": "IND:CS100009",
+          "industryCode": "CS100009"
+        }
+      ]
+    }
+  ]
+}

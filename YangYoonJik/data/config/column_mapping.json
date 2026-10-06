@@ -1,0 +1,30 @@
+{
+  "sales": {
+    "STDR_YYQU_CD": "quarter", "기준_년분기_코드": "quarter",
+    "TRDAR_SE_CD": "areaType", "상권_구분_코드": "areaType",
+    "TRDAR_CD": "areaId", "상권_코드": "areaId",
+    "TRDAR_CD_NM": "areaName", "상권_코드_명": "areaName",
+    "SVC_INDUTY_CD": "industryCode", "서비스_업종_코드": "industryCode",
+    "SVC_INDUTY_CD_NM": "industryName", "서비스_업종_코드_명": "industryName",
+    "THSMON_SELNG_AMT": "sales", "당월_매출_금액": "sales",
+    "THSMON_SELNG_CO": "salesCount", "당월_매출_건수": "salesCount"
+  },
+  "stores": {
+    "STDR_YYQU_CD": "quarter", "기준_년분기_코드": "quarter",
+    "TRDAR_CD": "areaId", "상권_코드": "areaId",
+    "SVC_INDUTY_CD": "industryCode", "서비스_업종_코드": "industryCode",
+    "STOR_CO": "normalStoreCount", "점포_수": "normalStoreCount",
+    "SIMILR_INDUTY_STOR_CO": "storeCount", "유사_업종_점포_수": "storeCount",
+    "FRC_STOR_CO": "franchiseCount", "프랜차이즈_점포_수": "franchiseCount",
+    "OPBIZ_RT": "openRate", "개업_율": "openRate",
+    "OPBIZ_STOR_CO": "openCount", "개업_점포_수": "openCount",
+    "CLSBIZ_RT": "closeRate", "폐업_률": "closeRate", "폐업_율": "closeRate",
+    "CLSBIZ_STOR_CO": "closeCount", "폐업_점포_수": "closeCount"
+  },
+  "population": {
+    "STDR_YYQU_CD": "quarter", "기준_년분기_코드": "quarter",
+    "TRDAR_CD": "areaId", "상권_코드": "areaId",
+    "TOT_FLPOP_CO": "floatingPopulation", "총_유동인구_수": "floatingPopulation"
+  }
+}
+

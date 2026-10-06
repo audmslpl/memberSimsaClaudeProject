@@ -1,0 +1,17 @@
+# 아침 날씨 브리핑 - 매일 08:00 KST
+0 8 * * * /Users/ghyu/Repositories/Claude/agent/scripts/weather-cron.sh morning
+
+# 점심 날씨 브리핑 - 매일 12:00 KST
+0 12 * * * /Users/ghyu/Repositories/Claude/agent/scripts/weather-cron.sh lunch
+
+# 저녁 날씨 브리핑 - 매일 18:00 KST
+0 18 * * * /Users/ghyu/Repositories/Claude/agent/scripts/weather-cron.sh evening
+
+# 아침 주식 브리핑 - 평일 07:30 KST
+30 7 * * 1-5 /Users/ghyu/Repositories/Claude/agent/scripts/stock-cron.sh morning
+
+# 점심 주식 브리핑 - 평일 12:30 KST
+30 12 * * 1-5 /Users/ghyu/Repositories/Claude/agent/scripts/stock-cron.sh lunch
+
+# 저녁 주식 브리핑 - 평일 17:30 KST
+30 17 * * 1-5 /Users/ghyu/Repositories/Claude/agent/scripts/stock-cron.sh evening

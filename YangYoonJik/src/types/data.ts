@@ -1,0 +1,5 @@
+export type RiskStatus='safe'|'caution'|'overheat'|'high_risk'|null;
+export interface CategoryOption{name:string;analysisKey:string;industryCode:string|null}
+export interface Category{name:string;analysisKey:string;children:CategoryOption[]}
+export interface CommercialRecord{quarter:string;areaId:string;areaName:string;dongName:string|null;analysisKey:string;topCategory:string;subCategory:string;industryCode:string|null;lng:number;lat:number;geometry:Record<string,unknown>|null;growthScore:number|null;scoreSource:'model'|'unavailable';currentHealthScore:number|null;riskScore:number|null;riskStatus:RiskStatus;recommendationScore:number|null;recommendationMode:'future'|'current_health'|'unavailable';salesYoY:number|null;populationYoY:number|null;salesPerStoreYoY:number|null;storeYoY:number|null;closeRate:number|null;sales:number|null;storeCount:number|null;modelMetrics?:{rocAuc:number;balancedAccuracy:number;f1:number}|null;trend?:number[]}
+export interface CommercialData{quarter:string|null;generatedAt:string|null;records:CommercialRecord[]}

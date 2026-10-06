@@ -1,0 +1,1103 @@
+<title>CM 패키지 매니저</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#F7F2E9;
+    --surface:#FFFFFF;
+    --surface-2:#EFE7D6;
+    --ink:#211D16;
+    --ink-soft:#5B5445;
+    --muted:#948C78;
+    --border:#E2D8C1;
+    --accent:#B8641C;
+    --accent-ink:#7A430F;
+    --accent-soft:#F0DAB4;
+    --teal:#1F6F68;
+    --teal-ink:#0F4842;
+    --teal-soft:#DCEDE9;
+    --sun:#B5402E;
+    --sat:#2E5C8A;
+    --today-ring:#B8641C;
+    --selected-bg:#F0B429;
+    --selected-ink:#3A2A05;
+    --danger:#B5402E;
+    --danger-soft:#F4DDD6;
+    --shadow:rgba(33,29,22,0.10);
+    --focus:#2E5C8A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1A170F;
+      --surface:#221E15;
+      --surface-2:#2A2418;
+      --ink:#F1E9D8;
+      --ink-soft:#C9BFA9;
+      --muted:#8F8571;
+      --border:#3A3323;
+      --accent:#E08A3E;
+      --accent-ink:#FBD9A8;
+      --accent-soft:#42320F;
+      --teal:#5FB3AA;
+      --teal-ink:#CFF1EC;
+      --teal-soft:#1E3733;
+      --sun:#DD7A67;
+      --sat:#7CA6D6;
+      --today-ring:#E08A3E;
+      --selected-bg:#8A6011;
+      --selected-ink:#FCE6B0;
+      --danger:#DD7A67;
+      --danger-soft:#452420;
+      --shadow:rgba(0,0,0,0.45);
+      --focus:#7CA6D6;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1A170F;
+    --surface:#221E15;
+    --surface-2:#2A2418;
+    --ink:#F1E9D8;
+    --ink-soft:#C9BFA9;
+    --muted:#8F8571;
+    --border:#3A3323;
+    --accent:#E08A3E;
+    --accent-ink:#FBD9A8;
+    --accent-soft:#42320F;
+    --teal:#5FB3AA;
+    --teal-ink:#CFF1EC;
+    --teal-soft:#1E3733;
+    --sun:#DD7A67;
+    --sat:#7CA6D6;
+    --today-ring:#E08A3E;
+    --selected-bg:#8A6011;
+    --selected-ink:#FCE6B0;
+    --danger:#DD7A67;
+    --danger-soft:#452420;
+    --shadow:rgba(0,0,0,0.45);
+    --focus:#7CA6D6;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Source Sans 3', -apple-system, sans-serif;
+    line-height:1.5;
+  }
+  h1,h2{font-family:'Fraunces', Georgia, serif; text-wrap:balance; margin:0;}
+  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace;}
+  :focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  button{font:inherit; cursor:pointer;}
+
+  .app{
+    max-width:720px;
+    margin:0 auto;
+    padding:32px 20px 80px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+  }
+
+  /* ---------- App bar ---------- */
+  .appbar{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand-mark{font-size:28px; line-height:1;}
+  .brand h1{font-size:22px; font-weight:600;}
+  .brand .tagline{margin:2px 0 0; font-size:13px; color:var(--muted);}
+  .seed-note{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--accent-soft);
+    color:var(--accent-ink);
+    border-radius:8px;
+    padding:8px 12px;
+    font-size:12.5px;
+    max-width:320px;
+  }
+  .seed-note button{
+    background:none; border:none; color:inherit; font-size:15px;
+    line-height:1; padding:0 2px; opacity:.7;
+  }
+  .seed-note button:hover{opacity:1;}
+
+  /* ---------- Panels ---------- */
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px 22px 22px;
+    box-shadow:0 6px 20px var(--shadow);
+  }
+  .panel h2{font-size:16px;}
+
+  /* ---------- Calendar ---------- */
+  .cal-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:12px;
+    flex-wrap:wrap;
+  }
+  .cal-title-group{display:flex; align-items:center; gap:8px;}
+  .cal-title-group h2{font-size:18px; white-space:nowrap;}
+  .cal-shortcuts{display:flex; gap:6px; flex-wrap:wrap;}
+  .icon-btn{
+    width:30px; height:30px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--surface-2);
+    color:var(--ink-soft);
+    font-size:16px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .icon-btn:hover{background:var(--accent-soft); color:var(--accent-ink); border-color:var(--accent-soft);}
+  .text-btn{
+    background:none; border:1px solid var(--border); border-radius:8px;
+    padding:5px 10px; font-size:12.5px; color:var(--ink-soft);
+  }
+  .text-btn:hover{border-color:var(--accent); color:var(--accent-ink);}
+
+  .dow-row{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    margin-bottom:4px;
+  }
+  .dow-row span{
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .dow-row span.sun{color:var(--sun);}
+  .dow-row span.sat{color:var(--sat);}
+
+  .cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:4px;
+  }
+  .cal-cell{
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--surface);
+    height:54px;
+    padding:5px 4px 3px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:1px;
+    text-align:left;
+    overflow:hidden;
+    transition:background .12s, border-color .12s;
+  }
+  .cal-cell:hover{border-color:var(--accent);}
+  .cal-cell.muted{opacity:.32;}
+  .cal-cell .date{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .cal-cell.sun .date{color:var(--sun);}
+  .cal-cell.sat .date{color:var(--sat);}
+  .cal-cell.today{box-shadow:inset 0 0 0 1.5px var(--today-ring);}
+  .cal-cell.selected{background:var(--selected-bg); border-color:var(--selected-bg);}
+  .cal-cell.selected .date,
+  .cal-cell.selected.sun .date,
+  .cal-cell.selected.sat .date{color:var(--selected-ink);}
+  .pkg-line{
+    font-size:9.5px;
+    line-height:1.2;
+    color:var(--ink-soft);
+    max-width:100%;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .cal-cell.selected .pkg-line{color:var(--selected-ink);}
+
+  .cal-legend{
+    display:flex; gap:16px; flex-wrap:wrap;
+    margin-top:10px; font-size:12px; color:var(--muted);
+  }
+  .cal-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .dot{width:8px; height:8px; border-radius:2px; display:inline-block;}
+
+  /* ---------- List ---------- */
+  .list-toolbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin-bottom:10px; flex-wrap:wrap;
+  }
+  .list-actions{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .month-stats{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    background:var(--surface-2);
+    padding:6px 10px;
+    border-radius:8px;
+    white-space:nowrap;
+  }
+  .primary-btn{
+    background:var(--accent); color:#fff; border:none; border-radius:8px;
+    padding:8px 14px; font-size:13.5px; font-weight:600;
+  }
+  .primary-btn:hover{background:var(--accent-ink);}
+  .ghost-btn{
+    background:none; border:1px solid var(--border); color:var(--ink-soft);
+    border-radius:8px; padding:8px 14px; font-size:13.5px;
+  }
+  .ghost-btn:hover{border-color:var(--ink-soft);}
+  .danger-btn{
+    background:none; border:1px solid var(--danger); color:var(--danger);
+    border-radius:8px; padding:8px 14px; font-size:13.5px;
+  }
+  .danger-btn:hover{background:var(--danger-soft);}
+
+  .list-body{display:flex; flex-direction:column;}
+  .empty-state{
+    padding:26px 4px; text-align:center; color:var(--muted); font-size:13.5px;
+  }
+  .list-row{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:2px 14px;
+    padding:7px 4px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    background:none; border-left:none; border-right:none; border-top:none;
+    width:100%;
+  }
+  .list-row:hover{background:var(--surface-2);}
+  .list-row:last-child{border-bottom:none;}
+  .list-row .name-col{display:flex; flex-direction:column; gap:1px; min-width:0;}
+  .list-row .name{font-size:14.5px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.3;}
+  .list-row .name .mono{color:var(--ink-soft); font-weight:600;}
+  .list-row .meta{font-size:12px; color:var(--muted); display:flex; gap:8px; flex-wrap:wrap; line-height:1.2;}
+  .row-right{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;}
+  .imp-badge{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    padding:3px 0;
+    width:34px;
+    display:inline-block;
+    text-align:center;
+    border-radius:6px;
+    white-space:nowrap;
+    border:1px solid transparent;
+  }
+  .imp-badge.imp-top{background:var(--danger-soft); color:var(--danger); border-color:var(--danger);}
+  .imp-badge.imp-high{background:var(--accent-soft); color:var(--accent-ink);}
+  .imp-badge.imp-mid{background:var(--teal-soft); color:var(--teal-ink);}
+  .imp-badge.imp-low{background:var(--surface-2); color:var(--muted);}
+  .status{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    padding:3px 0;
+    width:40px;
+    display:inline-block;
+    text-align:center;
+    border-radius:99px;
+    white-space:nowrap;
+  }
+  .status.doing{background:var(--accent-soft); color:var(--accent-ink);}
+  .status.done{background:var(--teal-soft); color:var(--teal-ink);}
+  .row-delete{
+    width:26px; height:26px; border-radius:7px; border:1px solid var(--border);
+    background:var(--surface); color:var(--muted); font-size:13px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .row-delete:hover{border-color:var(--danger); color:var(--danger); background:var(--danger-soft);}
+
+  /* ---------- Form ---------- */
+  .form-toolbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin-bottom:10px; flex-wrap:wrap;
+  }
+  .error-banner{
+    background:var(--danger-soft); color:var(--danger); border-radius:8px;
+    padding:9px 12px; font-size:13px; margin-bottom:10px;
+  }
+  .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px 14px;
+  }
+  .form-field{display:flex; flex-direction:column; gap:3px;}
+  .form-field.span-2{grid-column:1/-1;}
+  .form-field label{
+    font-size:12px; color:var(--muted); font-family:'IBM Plex Mono', monospace; letter-spacing:.02em;
+  }
+  .form-field input[type="text"],
+  .form-field input[type="date"],
+  .form-field input[type="time"],
+  .form-field input[type="number"],
+  .form-field select,
+  .form-field textarea{
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:7px 10px;
+    font-size:14px;
+    color:var(--ink);
+    font-family:inherit;
+    width:100%;
+  }
+  .form-field textarea{resize:vertical; min-height:52px; line-height:1.35;}
+  .form-field textarea.remark{min-height:26px;}
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus{border-color:var(--accent);}
+  .form-field input#fNo{text-transform:uppercase; letter-spacing:.04em;}
+  .progress-row{display:flex; align-items:center; gap:8px;}
+  .progress-row select{flex:none; width:64px; padding:7px 6px; font-size:12.5px;}
+  .progress-row input[type="range"]{flex:1; min-width:0; accent-color:var(--accent);}
+  .progress-row input[type="number"]{width:52px; flex:none; text-align:right; padding:7px 8px;}
+  .form-buttons{
+    grid-column:1/-1;
+    display:flex; gap:10px; margin-top:4px; flex-wrap:wrap;
+  }
+
+  @media (max-width:520px){
+    .form-grid{grid-template-columns:1fr;}
+  }
+
+  /* ---------- Toast notifications ---------- */
+  .toast-stack{
+    position:fixed;
+    top:16px;
+    right:16px;
+    z-index:999;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    width:300px;
+    max-width:calc(100vw - 32px);
+    pointer-events:none;
+  }
+  .toast{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:0 10px 28px var(--shadow);
+    padding:12px 14px;
+    animation:toastIn .25s ease-out;
+    pointer-events:auto;
+  }
+  .toast.leaving{ animation:toastOut .25s ease-in forwards; }
+  .toast .toast-title{
+    display:flex; align-items:center; gap:6px;
+    font-size:12.5px; font-weight:700; margin-bottom:4px;
+  }
+  .toast .toast-title.warn{color:var(--accent-ink);}
+  .toast .toast-title.done{color:var(--teal-ink);}
+  .toast .toast-body{
+    font-size:12.5px;
+    line-height:1.45;
+    color:var(--ink-soft);
+    white-space:pre-line;
+  }
+  @keyframes toastIn{
+    from{ opacity:0; transform:translateY(-8px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes toastOut{
+    from{ opacity:1; transform:translateY(0); }
+    to{ opacity:0; transform:translateY(-8px); }
+  }
+</style>
+
+<div class="app">
+  <header class="appbar">
+    <div class="brand">
+      <span class="brand-mark">🗓️</span>
+      <div>
+        <h1>CM 패키지 매니저</h1>
+        <p class="tagline">달력으로 보는 변경관리(CM) 일정</p>
+      </div>
+    </div>
+    <div class="seed-note" id="seedNote" hidden>
+      <span>샘플 데이터로 시작합니다 — 자유롭게 수정·삭제하세요.</span>
+      <button type="button" id="dismissSeed" aria-label="안내 닫기">×</button>
+    </div>
+  </header>
+
+  <section class="panel calendar-panel" aria-label="달력">
+    <div class="cal-toolbar">
+      <div class="cal-title-group">
+        <button type="button" class="icon-btn" id="prevMonth" aria-label="이전 달">‹</button>
+        <h2 id="monthLabel">2026년 09월</h2>
+        <button type="button" class="icon-btn" id="nextMonth" aria-label="다음 달">›</button>
+      </div>
+      <div class="cal-shortcuts">
+        <button type="button" class="text-btn" id="prevMonthQuick">전월</button>
+        <button type="button" class="text-btn" id="curMonthQuick">당월</button>
+        <button type="button" class="text-btn" id="nextMonthQuick">익월</button>
+        <button type="button" class="text-btn" id="todayBtn">오늘</button>
+      </div>
+    </div>
+    <div class="dow-row">
+      <span class="sun">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sat">토</span>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-legend">
+      <span><span class="dot" style="background:var(--selected-bg)"></span>선택된 날짜</span>
+      <span><span class="dot" style="background:var(--today-ring)"></span>오늘</span>
+      <span>3건 이상이면 2번째 줄 끝에 …</span>
+    </div>
+  </section>
+
+  <section class="panel list-panel" aria-label="CM 패키지 목록">
+    <div class="list-toolbar">
+      <h2 id="listTitle">전체 CM 패키지</h2>
+      <div class="list-actions">
+        <span class="month-stats" id="monthStats">진행중:0건 완료:0건</span>
+        <button type="button" class="text-btn" id="clearFilter" hidden>전체 보기</button>
+        <button type="button" class="primary-btn" id="newPkgBtn">+ 새 패키지</button>
+      </div>
+    </div>
+    <div class="list-body" id="listBody"></div>
+  </section>
+
+  <section class="panel form-panel" aria-label="CM 패키지 상세내역">
+    <div class="form-toolbar">
+      <h2 id="formTitle">새 CM 패키지 등록</h2>
+      <button type="button" class="text-btn" id="testNotifyBtn">알림메시지 테스트</button>
+    </div>
+    <div class="error-banner" id="errorBanner" hidden></div>
+    <form id="pkgForm">
+      <div class="form-grid">
+        <div class="form-field span-2">
+          <label for="fNo">패키지번호</label>
+          <input type="text" id="fNo" class="mono" placeholder="GAC00001" maxlength="8">
+        </div>
+        <div class="form-field">
+          <label for="fName">패키지명</label>
+          <input type="text" id="fName" placeholder="예: 회원DB 마이그레이션" maxlength="60">
+        </div>
+        <div class="form-field">
+          <label for="fProgressNumber">중요도 / 진행률</label>
+          <div class="progress-row">
+            <select id="fImportance" aria-label="패키지 중요도">
+              <option value="최상">최상</option>
+              <option value="상">상</option>
+              <option value="중" selected>중</option>
+              <option value="하">하</option>
+            </select>
+            <input type="range" id="fProgressRange" min="0" max="100" step="1" value="0">
+            <input type="number" id="fProgressNumber" min="0" max="100" step="1" value="0">
+          </div>
+        </div>
+        <div class="form-field span-2">
+          <label for="fDesc">변경관리 내용</label>
+          <textarea id="fDesc" placeholder="변경 사유, 범위, 영향도 등을 입력하세요"></textarea>
+        </div>
+        <div class="form-field span-2">
+          <label for="fRemark">비고</label>
+          <textarea id="fRemark" class="remark" placeholder="참고사항이 있으면 입력하세요"></textarea>
+        </div>
+        <div class="form-field">
+          <label for="fDate">적용일자</label>
+          <input type="date" id="fDate">
+        </div>
+        <div class="form-field">
+          <label for="fTime">적용시간</label>
+          <input type="time" id="fTime">
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="primary-btn">저장</button>
+          <button type="button" class="ghost-btn" id="cancelBtn">취소</button>
+          <button type="button" class="danger-btn" id="deleteBtn" hidden>삭제</button>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+  var STORAGE_KEY = "cm-package-manager:v2";
+  var storageAvailable = true;
+
+  var state = { packages: [], seeded: false };
+  var today = new Date();
+  var viewYear = today.getFullYear();
+  var viewMonth = today.getMonth();
+  var selectedDate = null;
+  var editingId = null;
+
+  function pad2(n){ return String(n).padStart(2, "0"); }
+  function dateKey(d){ return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate()); }
+  function todayKey(){ return dateKey(new Date()); }
+  function formatKoreanDate(key){
+    var parts = key.split("-").map(Number);
+    return parts[0] + "년 " + parts[1] + "월 " + parts[2] + "일";
+  }
+  function uid(){
+    if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "id-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+  }
+
+  // ---------- Notifications ----------
+  var NOTIFY_INTERVAL_MS = 60000;
+  var TOAST_DURATION_MS = 5000;
+  var toastStackEl;
+
+  function isWeekend(d){
+    var dow = d.getDay();
+    return dow === 0 || dow === 6;
+  }
+
+  // 적용일(dateKeyStr)로부터 n 영업일 전 날짜(YYYY-MM-DD)를 반환한다. 주말만 제외하고,
+  // 별도의 공휴일 달력은 고려하지 않는다.
+  function subtractBusinessDays(dateKeyStr, n){
+    var parts = dateKeyStr.split("-").map(Number);
+    var d = new Date(parts[0], parts[1]-1, parts[2]);
+    var count = 0;
+    while(count < n){
+      d.setDate(d.getDate() - 1);
+      if(!isWeekend(d)) count++;
+    }
+    return dateKey(d);
+  }
+
+  function parseDateTime(dateStr, timeStr){
+    var dp = dateStr.split("-").map(Number);
+    var tp = (timeStr || "00:00").split(":").map(Number);
+    return new Date(dp[0], dp[1]-1, dp[2], tp[0] || 0, tp[1] || 0, 0);
+  }
+
+  function showToast(kind, bodyText){
+    if(!toastStackEl) return;
+    var el = document.createElement("div");
+    el.className = "toast";
+    var title = document.createElement("div");
+    title.className = "toast-title " + kind;
+    title.textContent = (kind === "done" ? "✅ " : "🔔 ") + "CM 패키지 알림";
+    var body = document.createElement("div");
+    body.className = "toast-body";
+    body.textContent = bodyText;
+    el.appendChild(title);
+    el.appendChild(body);
+    toastStackEl.appendChild(el);
+    setTimeout(function(){
+      el.classList.add("leaving");
+      setTimeout(function(){ el.remove(); }, 250);
+    }, TOAST_DURATION_MS);
+  }
+
+  function beforeApplyBody(p, threshold){
+    return p.no + ":" + p.name + "\n" +
+      (p.desc || "") + "\n" +
+      "적용일: " + formatKoreanDate(p.date) + (p.time ? " " + p.time : "") +
+      " · 진행도 " + threshold + "% 미만";
+  }
+
+  function afterApplyBody(p){
+    return p.no + ":" + p.name + "\n" +
+      (p.desc || "") + "\n" +
+      "적용완료 — 적용이 완료됐으니 확인해 주세요.";
+  }
+
+  // retest: true면(테스트 버튼) 이미 발송된 알림도 무시하고 대상이면 매번 다시 띄우며,
+  // 실제 발송 이력(notified 플래그)은 건드리지 않아 정식 알림 동작에 영향을 주지 않는다.
+  function checkNotifications(retest){
+    var now = new Date();
+    var changed = false;
+    var todayNow = dateKey(now);
+    state.packages.forEach(function(p){
+      if(!p.date) return;
+      if(!p.notified) p.notified = { d3:false, d2:false, d1:false, after:false };
+      var applyDateTime = parseDateTime(p.date, p.time);
+
+      if(now < applyDateTime){
+        var d3 = subtractBusinessDays(p.date, 3);
+        var d2 = subtractBusinessDays(p.date, 2);
+        var d1 = subtractBusinessDays(p.date, 1);
+        if((retest || !p.notified.d3) && todayNow >= d3 && p.progress < 70){
+          showToast("warn", beforeApplyBody(p, 70));
+          if(!retest){ p.notified.d3 = true; changed = true; }
+        }
+        if((retest || !p.notified.d2) && todayNow >= d2 && p.progress < 80){
+          showToast("warn", beforeApplyBody(p, 80));
+          if(!retest){ p.notified.d2 = true; changed = true; }
+        }
+        if((retest || !p.notified.d1) && todayNow >= d1 && p.progress < 90){
+          showToast("warn", beforeApplyBody(p, 90));
+          if(!retest){ p.notified.d1 = true; changed = true; }
+        }
+      } else if(retest || !p.notified.after){
+        showToast("done", afterApplyBody(p));
+        if(!retest){ p.notified.after = true; changed = true; }
+      }
+    });
+    if(changed) saveState();
+  }
+
+  var NOTIFY_HOUR = 9;
+
+  // 알림은 매 영업일 오전 9시 이후에만 자동 발송한다(주말 제외).
+  function isAutoNotifyWindow(){
+    var now = new Date();
+    if(isWeekend(now)) return false;
+    return now.getHours() >= NOTIFY_HOUR;
+  }
+
+  // 초기 로드/주기 점검 등 자동 트리거는 영업일 9시 이후에만 실제 점검을 수행한다.
+  function maybeAutoCheckNotifications(){
+    if(isAutoNotifyWindow()) checkNotifications();
+  }
+
+  function seedPackages(){
+    // [패키지명, 패키지번호, 진행률, 변경관리 내용, 적용일자, 적용시간, 중요도, 비고]
+    var base = [
+      ["결제모듈 v2.3 배포","PAY00001",100,"PG사 API 응답 스키마 변경 대응, 결제 실패 재시도 로직 추가","2026-09-02","09:00","상",""],
+      ["배송API 핫픽스","SHP00002",80,"배송 상태 콜백 유실 건 긴급 패치","2026-09-03","22:00","최상","핫픽스 배포 후 30분 모니터링 필요"],
+      ["세션 타임아웃 정책 변경","SES00003",100,"유휴 세션 만료 시간을 30분에서 60분으로 조정","2026-09-05","20:00","하",""],
+      ["알림톡 연동 개선","ALM00004",15,"카카오 알림톡 발송 실패 재시도 큐 도입","2026-09-05","21:00","중",""],
+      ["회원DB 마이그레이션","MBR00005",62,"회원 테이블 파티셔닝 적용 및 인덱스 재구성","2026-09-05","23:30","최상","야간 작업, 서비스 일시 중단 예정"],
+      ["검색 랭킹 알고리즘 튜닝","SCH00006",30,"검색어 클릭 로그를 반영한 가중치 조정","2026-09-10","19:00","중",""],
+      ["관리자 권한 체계 개편","ADM00007",5,"역할 기반 접근 제어(RBAC) 1단계 적용","2026-09-18","18:00","상",""]
+    ];
+    return base.map(function(r){
+      return {
+        id: uid(), name:r[0], no:r[1], progress:r[2], desc:r[3],
+        date:r[4], time:r[5], importance:r[6], remark:r[7], createdAt: Date.now(),
+        notified:{ d3:false, d2:false, d1:false, after:false }
+      };
+    });
+  }
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(parsed && Array.isArray(parsed.packages)){
+          state = parsed;
+          return;
+        }
+      }
+    }catch(e){ storageAvailable = false; }
+    state = { packages: seedPackages(), seeded: true };
+    saveState();
+  }
+
+  function saveState(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }catch(e){
+      storageAvailable = false;
+      showError("이 브라우저에서는 데이터를 저장할 수 없어요(저장 공간 제한). 이번 세션 동안만 변경 내용이 유지됩니다.");
+    }
+  }
+
+  function markUserModified(){
+    if(state.seeded){
+      state.seeded = false;
+    }
+  }
+
+  function byDateTime(a,b){
+    if(a.date !== b.date) return a.date < b.date ? -1 : 1;
+    var at = a.time || "99:99";
+    var bt = b.time || "99:99";
+    if(at !== bt) return at < bt ? -1 : 1;
+    return a.createdAt - b.createdAt;
+  }
+
+  function packagesForDate(key){
+    return state.packages.filter(function(p){ return p.date === key; }).sort(byDateTime);
+  }
+
+  function impClass(level){
+    if(level === "최상") return "imp-top";
+    if(level === "상") return "imp-high";
+    if(level === "하") return "imp-low";
+    return "imp-mid";
+  }
+
+  // ---------- DOM refs ----------
+  var $ = function(id){ return document.getElementById(id); };
+  var monthLabel = $("monthLabel");
+  var calGrid = $("calGrid");
+  var listTitle = $("listTitle");
+  var listBody = $("listBody");
+  var clearFilterBtn = $("clearFilter");
+  var monthStatsEl = $("monthStats");
+  var seedNote = $("seedNote");
+  var errorBanner = $("errorBanner");
+  var formTitle = $("formTitle");
+  var deleteBtn = $("deleteBtn");
+  toastStackEl = $("toastStack");
+
+  var fName = $("fName"), fNo = $("fNo"), fDesc = $("fDesc"), fRemark = $("fRemark"),
+      fDate = $("fDate"), fTime = $("fTime"), fImportance = $("fImportance"),
+      fProgressRange = $("fProgressRange"), fProgressNumber = $("fProgressNumber");
+
+  // ---------- Calendar ----------
+  function renderCalendar(){
+    monthLabel.textContent = viewYear + "년 " + pad2(viewMonth+1) + "월";
+    var firstDay = new Date(viewYear, viewMonth, 1);
+    var startWeekday = firstDay.getDay();
+    var daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+    var daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
+    var tKey = todayKey();
+
+    calGrid.innerHTML = "";
+    for(var i=0;i<42;i++){
+      var dayNum = i - startWeekday + 1;
+      var cellDate, inMonth;
+      if(dayNum < 1){
+        cellDate = new Date(viewYear, viewMonth-1, daysInPrevMonth + dayNum);
+        inMonth = false;
+      } else if(dayNum > daysInMonth){
+        cellDate = new Date(viewYear, viewMonth+1, dayNum - daysInMonth);
+        inMonth = false;
+      } else {
+        cellDate = new Date(viewYear, viewMonth, dayNum);
+        inMonth = true;
+      }
+      var key = dateKey(cellDate);
+      var dow = cellDate.getDay();
+      var pkgs = packagesForDate(key);
+
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "cal-cell";
+      if(!inMonth) btn.classList.add("muted");
+      if(dow===0) btn.classList.add("sun");
+      if(dow===6) btn.classList.add("sat");
+      if(key===tKey) btn.classList.add("today");
+      if(key===selectedDate) btn.classList.add("selected");
+      btn.setAttribute("aria-pressed", key===selectedDate ? "true":"false");
+      btn.addEventListener("click", (function(k){ return function(){ onDateClick(k); }; })(key));
+
+      var dateSpan = document.createElement("span");
+      dateSpan.className = "date";
+      dateSpan.textContent = cellDate.getDate();
+      btn.appendChild(dateSpan);
+
+      if(pkgs.length > 0){
+        var line1 = document.createElement("div");
+        line1.className = "pkg-line";
+        line1.textContent = pkgs[0].no;
+        btn.appendChild(line1);
+        if(pkgs.length >= 2){
+          var line2 = document.createElement("div");
+          line2.className = "pkg-line";
+          line2.textContent = pkgs.length >= 3 ? (pkgs[1].no + "...") : pkgs[1].no;
+          btn.appendChild(line2);
+        }
+      }
+      calGrid.appendChild(btn);
+    }
+  }
+
+  function onDateClick(key){
+    selectedDate = (selectedDate === key) ? null : key;
+    renderAll();
+  }
+
+  function shiftMonth(delta){
+    viewMonth += delta;
+    while(viewMonth < 0){ viewMonth += 12; viewYear--; }
+    while(viewMonth > 11){ viewMonth -= 12; viewYear++; }
+    selectedDate = null;
+    renderAll();
+  }
+
+  function goToToday(){
+    var now = new Date();
+    viewYear = now.getFullYear();
+    viewMonth = now.getMonth();
+    selectedDate = null;
+    renderAll();
+  }
+
+  // ---------- List ----------
+  function statusInfo(progress){
+    if(progress >= 100) return { label: "완료", cls: "done" };
+    return { label: progress + "%", cls: "doing" };
+  }
+
+  function updateMonthStats(){
+    var prefix = viewYear + "-" + pad2(viewMonth+1);
+    var doing = 0, done = 0;
+    state.packages.forEach(function(p){
+      if(p.date && p.date.indexOf(prefix) === 0){
+        if(p.progress >= 100) done++; else doing++;
+      }
+    });
+    monthStatsEl.textContent = "진행중:" + doing + "건 완료:" + done + "건";
+  }
+
+  function renderList(){
+    updateMonthStats();
+    var totalCount = state.packages.length;
+    var filtered = selectedDate ? packagesForDate(selectedDate) : state.packages.slice().sort(byDateTime);
+    listTitle.textContent = selectedDate
+      ? formatKoreanDate(selectedDate) + " CM 패키지 (" + filtered.length + "/" + totalCount + ")"
+      : "전체 CM 패키지 (" + totalCount + "건)";
+    clearFilterBtn.hidden = !selectedDate;
+
+    listBody.innerHTML = "";
+    if(filtered.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = selectedDate ? "이 날짜에 등록된 CM 패키지가 없습니다." : "등록된 CM 패키지가 없습니다.";
+      listBody.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach(function(p){
+      var row = document.createElement("button");
+      row.type = "button";
+      row.className = "list-row";
+      row.addEventListener("click", function(){ loadIntoForm(p.id); });
+
+      var nameCol = document.createElement("div");
+      nameCol.className = "name-col";
+      var nameEl = document.createElement("span");
+      nameEl.className = "name";
+      nameEl.innerHTML = '<span class="mono">' + escapeHtml(p.no) + '</span>:' + escapeHtml(p.name);
+      var metaEl = document.createElement("span");
+      metaEl.className = "meta";
+      metaEl.innerHTML = '<span>' + formatKoreanDate(p.date) + (p.time ? " " + p.time : "") + '</span>';
+      nameCol.appendChild(nameEl);
+      nameCol.appendChild(metaEl);
+
+      var right = document.createElement("div");
+      right.className = "row-right";
+
+      var impEl = document.createElement("span");
+      impEl.className = "imp-badge " + impClass(p.importance);
+      impEl.textContent = p.importance || "중";
+
+      var status = statusInfo(p.progress);
+      var statusEl = document.createElement("span");
+      statusEl.className = "status " + status.cls;
+      statusEl.textContent = status.label;
+
+      var delBtn = document.createElement("span");
+      delBtn.className = "row-delete";
+      delBtn.setAttribute("role","button");
+      delBtn.setAttribute("tabindex","0");
+      delBtn.setAttribute("aria-label", p.name + " 삭제");
+      delBtn.textContent = "✕";
+      delBtn.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        deletePackage(p.id);
+      });
+      delBtn.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){
+          ev.preventDefault();
+          ev.stopPropagation();
+          deletePackage(p.id);
+        }
+      });
+
+      right.appendChild(impEl);
+      right.appendChild(statusEl);
+      right.appendChild(delBtn);
+
+      row.appendChild(nameCol);
+      row.appendChild(right);
+      listBody.appendChild(row);
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+
+  // ---------- Form ----------
+  function resetForm(prefillDate){
+    editingId = null;
+    formTitle.textContent = "새 CM 패키지 등록";
+    deleteBtn.hidden = true;
+    fName.value = "";
+    fNo.value = "";
+    fDesc.value = "";
+    fRemark.value = "";
+    fDate.value = prefillDate || "";
+    fTime.value = "";
+    fImportance.value = "중";
+    fProgressRange.value = 0;
+    fProgressNumber.value = 0;
+    hideError();
+  }
+
+  function loadIntoForm(id){
+    var p = state.packages.find(function(x){ return x.id === id; });
+    if(!p) return;
+    editingId = id;
+    formTitle.textContent = "CM 패키지 수정";
+    deleteBtn.hidden = false;
+    fName.value = p.name;
+    fNo.value = p.no;
+    fDesc.value = p.desc || "";
+    fRemark.value = p.remark || "";
+    fDate.value = p.date;
+    fTime.value = p.time || "";
+    fImportance.value = p.importance || "중";
+    fProgressRange.value = p.progress;
+    fProgressNumber.value = p.progress;
+    hideError();
+    document.querySelector(".form-panel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function showError(msg){
+    errorBanner.textContent = msg;
+    errorBanner.hidden = false;
+  }
+  function hideError(){
+    errorBanner.hidden = true;
+    errorBanner.textContent = "";
+  }
+
+  function deletePackage(id){
+    var p = state.packages.find(function(x){ return x.id === id; });
+    if(!p) return;
+    if(!window.confirm('"' + p.name + '" 패키지를 삭제하시겠습니까?')) return;
+    state.packages = state.packages.filter(function(x){ return x.id !== id; });
+    markUserModified();
+    saveState();
+    updateSeedNote();
+    renderAll();
+    if(editingId === id) resetForm(selectedDate);
+  }
+
+  var PKG_NO_PATTERN = /^[A-Z]{3}[0-9]{5}$/;
+
+  function validateForm(){
+    var errors = [];
+    var no = fNo.value.trim().toUpperCase();
+    if(!fName.value.trim()) errors.push("패키지명을 입력하세요.");
+    if(!no) errors.push("패키지번호를 입력하세요.");
+    else if(!PKG_NO_PATTERN.test(no)) errors.push("패키지번호는 영문 3자리 + 숫자 5자리 형식이어야 합니다. 예: GAC00001");
+    if(!fDate.value) errors.push("적용일자를 선택하세요.");
+    var progress = parseInt(fProgressNumber.value, 10);
+    if(isNaN(progress) || progress < 0 || progress > 100) errors.push("진행률은 0~100 사이의 숫자여야 합니다.");
+    return errors;
+  }
+
+  function onSubmit(ev){
+    ev.preventDefault();
+    var errors = validateForm();
+    if(errors.length){
+      showError(errors.join(" "));
+      return;
+    }
+    hideError();
+    var progress = parseInt(fProgressNumber.value, 10);
+    var no = fNo.value.trim().toUpperCase();
+    if(editingId){
+      var p = state.packages.find(function(x){ return x.id === editingId; });
+      if(p.date !== fDate.value || p.time !== fTime.value){
+        // 적용일자/시간이 바뀌면 알림 발송 이력을 초기화해 새 일정 기준으로 다시 안내한다.
+        p.notified = { d3:false, d2:false, d1:false, after:false };
+      }
+      p.name = fName.value.trim();
+      p.no = no;
+      p.desc = fDesc.value.trim();
+      p.remark = fRemark.value.trim();
+      p.date = fDate.value;
+      p.time = fTime.value;
+      p.importance = fImportance.value;
+      p.progress = progress;
+    } else {
+      state.packages.push({
+        id: uid(),
+        name: fName.value.trim(),
+        no: no,
+        desc: fDesc.value.trim(),
+        remark: fRemark.value.trim(),
+        date: fDate.value,
+        time: fTime.value,
+        importance: fImportance.value,
+        progress: progress,
+        createdAt: Date.now(),
+        notified:{ d3:false, d2:false, d1:false, after:false }
+      });
+    }
+    markUserModified();
+    saveState();
+    updateSeedNote();
+    renderAll();
+    resetForm(selectedDate);
+    maybeAutoCheckNotifications();
+  }
+
+  // ---------- Seed note ----------
+  function updateSeedNote(){
+    seedNote.hidden = !state.seeded;
+  }
+
+  function renderAll(){
+    renderCalendar();
+    renderList();
+  }
+
+  // ---------- Wiring ----------
+  $("prevMonth").addEventListener("click", function(){ shiftMonth(-1); });
+  $("nextMonth").addEventListener("click", function(){ shiftMonth(1); });
+  $("prevMonthQuick").addEventListener("click", function(){ shiftMonth(-1); });
+  $("nextMonthQuick").addEventListener("click", function(){ shiftMonth(1); });
+  $("curMonthQuick").addEventListener("click", goToToday);
+  $("todayBtn").addEventListener("click", goToToday);
+  clearFilterBtn.addEventListener("click", function(){
+    selectedDate = null;
+    renderAll();
+  });
+  $("newPkgBtn").addEventListener("click", function(){
+    resetForm(selectedDate);
+  });
+  $("cancelBtn").addEventListener("click", function(){
+    resetForm(selectedDate);
+  });
+  deleteBtn.addEventListener("click", function(){
+    if(editingId) deletePackage(editingId);
+  });
+  $("pkgForm").addEventListener("submit", onSubmit);
+  $("dismissSeed").addEventListener("click", function(){
+    state.seeded = false;
+    saveState();
+    updateSeedNote();
+  });
+  fNo.addEventListener("input", function(){
+    var pos = fNo.selectionStart;
+    fNo.value = fNo.value.toUpperCase();
+    if(pos !== null) fNo.setSelectionRange(pos, pos);
+  });
+  fProgressRange.addEventListener("input", function(){ fProgressNumber.value = fProgressRange.value; });
+  fProgressNumber.addEventListener("input", function(){
+    var v = fProgressNumber.value;
+    if(v !== "") fProgressRange.value = Math.min(100, Math.max(0, parseInt(v,10) || 0));
+  });
+
+  // ---------- Init ----------
+  loadState();
+  updateSeedNote();
+  resetForm(null);
+  renderAll();
+  maybeAutoCheckNotifications();
+  setInterval(maybeAutoCheckNotifications, NOTIFY_INTERVAL_MS);
+  $("testNotifyBtn").addEventListener("click", function(){
+    checkNotifications(true);
+  });
+})();
+</script>
