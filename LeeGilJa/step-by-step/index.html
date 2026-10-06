@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>내 예적금</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <header class="app-header">
+      <h1>내 예적금</h1>
+      <p class="muted">오늘 <span id="today"></span> 기준</p>
+    </header>
+
+    <!-- 중도해지 상품은 이미 찾은 돈이므로 합계에서 제외 -->
+    <section class="summary">
+      <div class="stat stat-main">
+        <span class="stat-label">현재 평가액</span>
+        <strong class="stat-value" id="sumValue">0원</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">총 납입 원금</span>
+        <strong class="stat-value" id="sumPrincipal">0원</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">현재까지 이자</span>
+        <strong class="stat-value" id="sumInterest">0원</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">만기 예상 총액 (세후)</span>
+        <strong class="stat-value" id="sumMaturity">0원</strong>
+      </div>
+    </section>
+
+    <section class="subtotals">
+      <span id="subSavings"></span>
+      <span id="subDeposit"></span>
+      <span id="subTerminated"></span>
+    </section>
+
+    <div class="toolbar">
+      <div class="tabs">
+        <button type="button" class="tab active" data-filter="all">전체</button>
+        <button type="button" class="tab" data-filter="deposit">예금</button>
+        <button type="button" class="tab" data-filter="savings">적금</button>
+      </div>
+      <button type="button" class="btn btn-primary" id="addBtn">+ 상품 추가</button>
+    </div>
+
+    <ul class="list" id="list"></ul>
+    <p class="empty" id="empty" hidden>등록된 상품이 없습니다.</p>
+
+    <p class="note">이자는 단리(365일 기준)로 계산하며 실제 은행 금액과 차이가 날 수 있습니다. 만기 예상 이자는 이자소득세 15.4%(일반과세)를 뺀 세후 금액이고, 현재 이자와 해지 시 이자는 세전 금액입니다. 중도해지 이자는 약정 이율을 그대로 적용합니다.</p>
+  </main>
+
+  <dialog id="dialog">
+    <form id="form" novalidate>
+      <h2 id="formTitle">상품 추가</h2>
+
+      <fieldset class="category-field">
+        <legend>구분</legend>
+        <label><input type="radio" name="category" value="deposit" checked> 예금</label>
+        <label><input type="radio" name="category" value="savings"> 적금</label>
+      </fieldset>
+
+      <label class="field">
+        <span>상품명 *</span>
+        <input type="text" name="name" maxlength="50" placeholder="예: OO은행 정기예금">
+      </label>
+      <label class="field">
+        <span>금융기관</span>
+        <input type="text" name="bank" maxlength="30">
+      </label>
+      <label class="field" data-for="deposit">
+        <span>예치 원금 (원) *</span>
+        <input type="number" name="principal" min="1" step="1" inputmode="numeric">
+      </label>
+      <label class="field" data-for="savings" hidden>
+        <span>월 납입액 (원) *</span>
+        <input type="number" name="monthlyAmount" min="1" step="1" inputmode="numeric">
+      </label>
+      <label class="field" data-for="savings" hidden>
+        <span>미납 회차 (회)</span>
+        <input type="number" name="missedCount" min="0" step="1" value="0" inputmode="numeric">
+      </label>
+      <label class="field">
+        <span>연 이율 (%) *</span>
+        <input type="number" name="rate" min="0" step="0.01" inputmode="decimal">
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>신규일 *</span>
+          <input type="date" name="startDate">
+        </label>
+        <label class="field">
+          <span>만기일 *</span>
+          <input type="date" name="maturityDate">
+        </label>
+      </div>
+      <label class="field">
+        <span>중도해지일 (해지한 경우만)</span>
+        <input type="date" name="terminationDate">
+      </label>
+      <label class="field">
+        <span>메모</span>
+        <textarea name="memo" rows="2" maxlength="200"></textarea>
+      </label>
+
+      <p class="form-error" id="formError" hidden></p>
+
+      <div class="form-actions">
+        <button type="button" class="btn" id="cancelBtn">취소</button>
+        <button type="submit" class="btn btn-primary">저장</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
